@@ -1,18 +1,29 @@
 [project]
+authors = [
+  {name = "Pedro Duarte<pedro_migueld@hotmail.com>"},
+]
+dependencies = ["pandas"]
+description = "First assignment of the Foundations Learning Path"
+name = "life_expectancy"
 readme = "README.md"
 requires-python = ">=3.8"
-description = "First assignment of the Foundations Learning Path"
-authors = [
-    {name = "Fernando Cordeiro<fernando@daredata.engineering>"}
-]
+version = "0.1.0"
 
 [project.optional-dependencies]
 dev = ["pytest", "pylint", "pytest-cov", "toml"]
 
 [tool.coverage.run]
 omit = [
-    "*/conftest.py", "*/test*", # omit test files
+  "*/conftest.py",
+  "*/test*", # omit test files
 ]
 
 [tool.coverage.report]
 fail_under = 80
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61.0"]
+
+[tool.setuptools]
+packages = ["life_expectancy"]
