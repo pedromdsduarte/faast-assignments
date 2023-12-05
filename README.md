@@ -1,4 +1,5 @@
 # FAAST Advance Foundations Assignments
+[![Python package - Linting and testing](https://github.com/pedromdsduarte/faast-assignments/actions/workflows/python-package.yml/badge.svg?branch=ci)](https://github.com/pedromdsduarte/faast-assignments/actions/workflows/python-package.yml)
 
 ## Introduction
 
