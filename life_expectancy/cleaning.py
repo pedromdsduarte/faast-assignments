@@ -17,11 +17,11 @@ def load_data(data_path: str, sep: str = "\t") -> pd.DataFrame:
     return df_eu_life_expectancy_raw
 
 
-def clean_data(data: pd.DataFrame, country: str) -> pd.DataFrame:
+def clean_data(df: pd.DataFrame, country: str) -> pd.DataFrame:
     """Cleans data and filters by the specified country.
 
     Args:
-        data (pd.DataFrame): The data to be cleaned.
+        df (pd.DataFrame): The data to be cleaned.
         country (str): The country to filter the data by.
 
     Returns:
@@ -29,7 +29,7 @@ def clean_data(data: pd.DataFrame, country: str) -> pd.DataFrame:
     """
 
     # unpivot to long format
-    df_eu_life_expectancy = data.copy()
+    df_eu_life_expectancy = df.copy()
     df_eu_life_expectancy[["unit", "sex", "age", "region"]] = df_eu_life_expectancy["unit,sex,age,geo\\time"].str.split(
         ",", expand=True
     )
@@ -50,14 +50,14 @@ def clean_data(data: pd.DataFrame, country: str) -> pd.DataFrame:
     return df_pt_life_expectancy
 
 
-def save_data(data: pd.DataFrame, path: str):
+def save_data(df: pd.DataFrame, path: str):
     """Saves data to csv specified by the given path.
 
     Args:
-        data (pd.DataFrame): The dataframe to export to csv.
+        df (pd.DataFrame): The dataframe to export to csv.
         path (str): The location to save the data to.
     """
-    data.to_csv(path, index=False)
+    df.to_csv(path, index=False)
 
 
 if __name__ == "__main__":  # pragma: no cover
@@ -66,12 +66,12 @@ if __name__ == "__main__":  # pragma: no cover
 
     # args
     args = parser.parse_args()
-    country = args.country
+    arg_country = args.country
 
     # paths
-    input_data_path = "life_expectancy/data/eu_life_expectancy_raw.tsv"
-    output_data_path = f"life_expectancy/data/{country.lower()}_life_expectancy.csv"
+    INPUT_DATA_PATH = "life_expectancy/data/eu_life_expectancy_raw.tsv"
+    output_data_path = f"life_expectancy/data/{arg_country.lower()}_life_expectancy.csv"
 
-    data = load_data(input_data_path)
-    cleaned_data = clean_data(data, country)
+    data = load_data(INPUT_DATA_PATH)
+    cleaned_data = clean_data(data, arg_country)
     save_data(cleaned_data, output_data_path)
