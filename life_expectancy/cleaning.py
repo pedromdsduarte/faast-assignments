@@ -30,22 +30,28 @@ def clean_data(df: pd.DataFrame, country: str) -> pd.DataFrame:
 
     # unpivot to long format
     df_eu_life_expectancy = df.copy()
-    df_eu_life_expectancy[["unit", "sex", "age", "region"]] = df_eu_life_expectancy["unit,sex,age,geo\\time"].str.split(
-        ",", expand=True
-    )
+    df_eu_life_expectancy[["unit", "sex", "age", "region"]] = df_eu_life_expectancy[
+        "unit,sex,age,geo\\time"
+    ].str.split(",", expand=True)
     df_eu_life_expectancy = df_eu_life_expectancy.drop("unit,sex,age,geo\\time", axis=1)
-    df_eu_life_expectancy = df_eu_life_expectancy.melt(id_vars=["unit", "sex", "age", "region"], var_name="year")
+    df_eu_life_expectancy = df_eu_life_expectancy.melt(
+        id_vars=["unit", "sex", "age", "region"], var_name="year"
+    )
 
     # ensure data types
     df_eu_life_expectancy["year"] = df_eu_life_expectancy["year"].astype(int)
-    df_eu_life_expectancy["value"] = df_eu_life_expectancy["value"].str.extract(r"(\d+\.\d)")
+    df_eu_life_expectancy["value"] = df_eu_life_expectancy["value"].str.extract(
+        r"(\d+\.\d)"
+    )
     df_eu_life_expectancy["value"] = df_eu_life_expectancy["value"].astype(float)
 
     # drop nulls
     df_eu_life_expectancy = df_eu_life_expectancy.dropna()
 
     # filter data
-    df_pt_life_expectancy = df_eu_life_expectancy[df_eu_life_expectancy["region"] == country]
+    df_pt_life_expectancy = df_eu_life_expectancy[
+        df_eu_life_expectancy["region"] == country
+    ]
 
     return df_pt_life_expectancy
 
@@ -62,7 +68,9 @@ def save_data(df: pd.DataFrame, path: str):
 
 if __name__ == "__main__":  # pragma: no cover
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--country", help="Specify country.", type=str, default="PT")
+    parser.add_argument(
+        "-c", "--country", help="Specify country.", type=str, default="PT"
+    )
 
     # args
     args = parser.parse_args()
