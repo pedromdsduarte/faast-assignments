@@ -5,12 +5,12 @@ import pandas as pd
 from life_expectancy.data_io import load_data, save_data
 
 
-def clean_data(df: pd.DataFrame, country: str) -> pd.DataFrame:
+def clean_data(df: pd.DataFrame, country: str | None = None) -> pd.DataFrame:
     """Cleans data and filters by the specified country.
 
     Args:
         df (pd.DataFrame): The data to be cleaned.
-        country (str): The country to filter the data by.
+        country (str): The country to filter the data by. Optional.
 
     Returns:
         pd.DataFrame: The cleaned data.
@@ -30,26 +30,31 @@ def clean_data(df: pd.DataFrame, country: str) -> pd.DataFrame:
     df_eu_life_expectancy["value"] = df_eu_life_expectancy["value"].astype(float)
 
     # drop nulls
-    df_eu_life_expectancy = df_eu_life_expectancy.dropna()
+    df_clean_data = df_eu_life_expectancy.dropna().copy()
 
     # filter data
-    df_pt_life_expectancy = df_eu_life_expectancy[df_eu_life_expectancy["region"] == country]
+    if country is not None:
+        df_clean_data = df_clean_data[df_clean_data["region"] == country]
 
-    return df_pt_life_expectancy
+    return df_clean_data
 
 
 if __name__ == "__main__":  # pragma: no cover
+    INPUT_DATA_PATH = "life_expectancy/data/eu_life_expectancy_raw.tsv"
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--country", help="Specify country.", type=str, default="PT")
+    parser.add_argument("-c", "--country", help="Specify country.", type=str, default=None)
+    parser.add_argument("-i", "--input", help="Specify file to clean.", type=str, default=INPUT_DATA_PATH)
 
     # args
     args = parser.parse_args()
     arg_country = args.country
+    arg_input = args.input
 
     # paths
-    INPUT_DATA_PATH = "life_expectancy/data/eu_life_expectancy_raw.tsv"
-    output_data_path = f"life_expectancy/data/{arg_country.lower()}_life_expectancy.csv"
+    output_data_path = (
+        f"life_expectancy/data/{arg_country.lower() if args.country is not None else 'eu'}_life_expectancy.csv"
+    )
 
-    data = load_data(INPUT_DATA_PATH)
+    data = load_data(arg_input)
     cleaned_data = clean_data(data, arg_country)
     save_data(cleaned_data, output_data_path)
