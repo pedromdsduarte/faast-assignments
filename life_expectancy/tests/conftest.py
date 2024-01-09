@@ -14,4 +14,4 @@ def pt_life_expectancy_expected() -> pd.DataFrame:
 @pytest.fixture(scope="session")
 def eu_life_expectancy_raw() -> pd.DataFrame:
     """Fixture to load the raw input of the cleaning script"""
-    return pd.read_csv(FIXTURES_DIR / "eu_life_expectancy_raw.tsv")
+    return pd.read_csv(FIXTURES_DIR / "eu_life_expectancy_raw.tsv", sep="\t")
