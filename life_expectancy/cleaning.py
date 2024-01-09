@@ -1,5 +1,6 @@
 import argparse
 
+import numpy as np
 import pandas as pd
 
 from life_expectancy.data_io import load_data, save_data
@@ -25,7 +26,7 @@ def clean_data(df: pd.DataFrame, country: str | None = None) -> pd.DataFrame:
     df_eu_life_expectancy = df_eu_life_expectancy.melt(id_vars=["unit", "sex", "age", "region"], var_name="year")
 
     # ensure data types
-    df_eu_life_expectancy["year"] = df_eu_life_expectancy["year"].astype(int)
+    df_eu_life_expectancy["year"] = df_eu_life_expectancy["year"].astype(np.int64)
     df_eu_life_expectancy["value"] = df_eu_life_expectancy["value"].str.extract(r"(\d+\.\d)")
     df_eu_life_expectancy["value"] = df_eu_life_expectancy["value"].astype(float)
 
@@ -36,7 +37,7 @@ def clean_data(df: pd.DataFrame, country: str | None = None) -> pd.DataFrame:
     if country is not None:
         df_clean_data = df_clean_data[df_clean_data["region"] == country]
 
-    return df_clean_data
+    return df_clean_data.reset_index(drop=True)
 
 
 if __name__ == "__main__":  # pragma: no cover
