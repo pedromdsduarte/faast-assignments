@@ -33,3 +33,6 @@ disable = [
   "missing-module-docstring", # Add any other checks you want to disable here
   "line-too-long",
 ]
+
+[tool.ruff]
+line-length = 120
