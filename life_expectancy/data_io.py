@@ -15,7 +15,7 @@ def load_data(data_path: str, sep: str = "\t") -> pd.DataFrame:
     return df_eu_life_expectancy_raw
 
 
-def save_data(df: pd.DataFrame, path: str):
+def save_data(df: pd.DataFrame, path: str) -> None:
     """Saves data to csv specified by the given path.
 
     Args:
