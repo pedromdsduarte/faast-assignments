@@ -31,7 +31,7 @@ def clean_data(df: pd.DataFrame, country: str | None = None) -> pd.DataFrame:
     df_eu_life_expectancy["value"] = df_eu_life_expectancy["value"].astype(float)
 
     # drop nulls
-    df_clean_data = df_eu_life_expectancy.dropna().copy()
+    df_clean_data = df_eu_life_expectancy.dropna()
 
     # filter data
     if country is not None:

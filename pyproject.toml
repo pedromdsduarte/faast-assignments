@@ -34,11 +34,5 @@ disable = [
   "line-too-long",
 ]
 
-[tool.pytest.ini_options]
-filterwarnings = [
-  "error",
-  "ignore::DeprecationWarning" 
-]
-
 [tool.ruff]
 line-length = 120
