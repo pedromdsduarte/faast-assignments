@@ -4,14 +4,15 @@ import numpy as np
 import pandas as pd
 
 from life_expectancy.data_io import load_data, save_data
+from life_expectancy.region import Region
 
 
-def clean_data(df: pd.DataFrame, country: str | None = None) -> pd.DataFrame:
+def clean_data(df: pd.DataFrame, country: Region | None = None) -> pd.DataFrame:
     """Cleans data and filters by the specified country.
 
     Args:
         df (pd.DataFrame): The data to be cleaned.
-        country (str): The country to filter the data by. Optional.
+        country (Region): The country to filter the data by. Optional.
 
     Returns:
         pd.DataFrame: The cleaned data.
@@ -35,7 +36,7 @@ def clean_data(df: pd.DataFrame, country: str | None = None) -> pd.DataFrame:
 
     # filter data
     if country is not None:
-        df_clean_data = df_clean_data[df_clean_data["region"] == country]
+        df_clean_data = df_clean_data[df_clean_data["region"] == country.name]
 
     return df_clean_data.reset_index(drop=True)
 
@@ -48,13 +49,11 @@ if __name__ == "__main__":  # pragma: no cover
 
     # args
     args = parser.parse_args()
-    arg_country = args.country
+    arg_country = Region[args.country.upper()]
     arg_input = args.input
 
     # paths
-    output_data_path = (
-        f"life_expectancy/data/{arg_country.lower() if args.country is not None else 'eu'}_life_expectancy.csv"
-    )
+    output_data_path = f"life_expectancy/data/{str(arg_country.value).lower() if args.country is not None else 'eu'}_life_expectancy.csv"
 
     data = load_data(arg_input)
     cleaned_data = clean_data(data, arg_country)
