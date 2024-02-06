@@ -61,27 +61,30 @@ class AbstractCleaningStrategy(ABC):
 class CSVCleaningStrategy(AbstractCleaningStrategy):
     """Class that implements the strategy for cleaning life_expectancy data in CSV formats."""
 
-    def load_data(self, data_path: Path | str, *args, sep: str = "\t", **kwargs):
+    def load_data(self, data_path: Path | str, *args, **kwargs):
         """Reads the csv from a specified path to a dataframe.
 
         Args:
             data_path (str): The path from which to load the data.
-            sep (str, optional): The separator to use for the file. Defaults to "\t".
 
         Returns:
             pd.DataFrame: The dataframe containing the data.
         """
-        df_data = pd.read_csv(data_path, sep=sep)
+        if "sep" not in kwargs:
+            kwargs["sep"] = "\t"
+        df_data = pd.read_csv(data_path, *args, **kwargs)
         return df_data
 
-    def save_data(self, df: pd.DataFrame, path: str, *args, **kwargs) -> None:
+    def save_data(self, data: pd.DataFrame, output_path: Path | str, *args, **kwargs) -> None:
         """Saves data to csv specified by the given path.
 
         Args:
             df (pd.DataFrame): The dataframe to export to csv.
             path (str): The location to save the data to.
         """
-        df.to_csv(path, index=False)
+        if "index" not in kwargs:
+            kwargs["index"] = False
+        data.to_csv(output_path, *args, **kwargs)
 
     def clean_data(self, df: pd.DataFrame, country: Region | None = None) -> pd.DataFrame:
         """
@@ -130,14 +133,16 @@ class JSONCleaningStrategy(AbstractCleaningStrategy):
         df_data = pd.read_json(data_path, *args, **kwargs)
         return df_data
 
-    def save_data(self, df: pd.DataFrame, path: str, *args, **kwargs) -> None:
+    def save_data(self, data: pd.DataFrame, output_path: Path | str, *args, **kwargs) -> None:
         """Saves data to json specified by the given path.
 
         Args:
             df (pd.DataFrame): The dataframe to export to json.
             path (str): The location to save the data to.
         """
-        df.to_json(path, index=False)
+        if "index" not in kwargs:
+            kwargs["index"] = False
+        data.to_json(output_path, *args, **kwargs)
 
     def clean_data(self, df: pd.DataFrame, country: Region | None = None) -> pd.DataFrame:
         """
@@ -174,17 +179,17 @@ if __name__ == "__main__":  # pragma: no cover
     parser.add_argument("-i", "--input", help="Specify file to clean.", type=str, default=INPUT_DATA_PATH)
 
     # args
-    args = parser.parse_args()
-    arg_country = Region[args.country.upper()]
-    arg_input = args.input
+    parsed_args = parser.parse_args()
+    arg_country = Region[parsed_args.country.upper()]
+    arg_input = parsed_args.input
 
     # paths
     file_ext = Path(arg_input).suffix
     # keep same file extension
-    output_data_path = f"life_expectancy/data/{str(arg_country.value).lower() if args.country is not None else 'eu'}_life_expectancy{file_ext}"
+    output_data_path = f"life_expectancy/data/{str(arg_country.value).lower() if parsed_args.country is not None else 'eu'}_life_expectancy{file_ext}"
 
     strategies = {".csv": CSVCleaningStrategy, ".tsv": CSVCleaningStrategy, ".json": JSONCleaningStrategy}
     cleaning_strategy = strategies[file_ext]()
-    data = cleaning_strategy.load_data(arg_input)
-    cleaned_data = cleaning_strategy.clean_data(data, arg_country.PT)
+    raw_data = cleaning_strategy.load_data(arg_input)
+    cleaned_data = cleaning_strategy.clean_data(raw_data, arg_country.PT)
     cleaning_strategy.save_data(cleaned_data, output_data_path)

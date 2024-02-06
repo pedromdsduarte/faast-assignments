@@ -21,4 +21,5 @@ def eu_life_expectancy_raw() -> pd.DataFrame:
 
 @pytest.fixture(scope="session")
 def csv_cleaning_strategy() -> CSVCleaningStrategy:
+    """Fixture to create a CSV cleaning strategy."""
     return CSVCleaningStrategy()
