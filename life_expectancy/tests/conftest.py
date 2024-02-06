@@ -2,6 +2,8 @@
 import pandas as pd
 import pytest
 
+from life_expectancy.cleaning_strategies import CSVCleaningStrategy
+
 from . import FIXTURES_DIR
 
 
@@ -15,3 +17,8 @@ def pt_life_expectancy_expected() -> pd.DataFrame:
 def eu_life_expectancy_raw() -> pd.DataFrame:
     """Fixture to load the raw input of the cleaning script"""
     return pd.read_csv(FIXTURES_DIR / "eu_life_expectancy_raw.tsv", sep="\t")
+
+
+@pytest.fixture(scope="session")
+def csv_cleaning_strategy() -> CSVCleaningStrategy:
+    return CSVCleaningStrategy()
